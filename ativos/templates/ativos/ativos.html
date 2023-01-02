@@ -1,0 +1,810 @@
+{% extends 'base.html' %} 
+
+{% block title %} 
+ativos
+{% endblock %} 
+
+{% block body %}
+
+{% if alert %}
+<script>
+    alert("{{alert}}")
+</script>
+{% endif %}
+
+<div class="m-3">
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action active" aria-current="true">Ativos</a>
+                <a href="/ativos/pacotes/" class="list-group-item list-group-item-action">Gestão de pacotes</a>
+                <a href="/ativos/gestao/" class="list-group-item list-group-item-action">Gestão de ativos</a>
+                <a href="/ativos/classes/" class="list-group-item list-group-item-action">Classes de ativos</a>
+                <a href="/ativos/marcas/" class="list-group-item list-group-item-action">Marcas de ativos</a>
+            </div>
+        </div>
+        <div class="col-8 border rounded-5 border">
+            {% if modo == 'info' %}
+            <p class="text-center mt-5">{{content}}</p>
+            {% endif %}
+            {% if modo == 'classes' %}
+            <div class="m-4">
+              <div>
+                <table>
+                  <tr>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="crt">
+                        <button type="submit" class="btn btn-primary m-3">Criar Classe</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="lst">
+                        <button type="submit" class="btn btn-primary m-3">Listar Classes</button>
+                        </form>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+            {% if modo == 'crtcls' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome da classe</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-da-classe" required="">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-control" rows="10" name="descricao"></textarea>
+                  </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'lstcls' %}
+            <div class="list-group m-3">
+                {% for classe in classes %}
+                    <a href="/ativos/classe/{{classe.id}}/" class="list-group-item list-group-item-action">{{classe.name}}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if modo == 'atzcls' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome da classe</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-da-classe" required="" value="{{cls.name}}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Descrição</label>
+                    <textarea class="form-control" rows="10" name="descricao">{{cls.description}}</textarea>
+                    <div class="form-text"> <a href="/ativos/classe/delete/{{cls.id}}/">Clique aqui</a> para <strong> deletar </strong> esta classe!</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'delcls' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar a classe: {{classes.name}}?</p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            <!-- gerenciamento de marcas -->
+            {% if modo == 'crtbrd' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome da marca</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-da-marca" required="">
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'lstbrd' %}
+            <div class="list-group m-3">
+                {% for brd in brand %}
+                    <a href="/ativos/marca/{{brd.id}}/" class="list-group-item list-group-item-action">{{brd.brand_name}}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if modo == 'atzbrd' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome da classe</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-da-marca" required="" value="{{brand.brand_name}}">
+                  <div class="form-text"> <a href="/ativos/marca/delete/{{brand.id}}/">Clique aqui</a> para <strong> deletar </strong> esta classe!</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'delbrd' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar a marca: {{brand.brand_name}}?</p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'brds' %}
+            <div class="m-4">
+              <div>
+                <table>
+                  <tr>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="crtbrd" value="1">
+                        <button type="submit" class="btn btn-primary m-3">Criar Marca</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="lstbrd" value="1">
+                        <button type="submit" class="btn btn-primary m-3">Listar Marcas</button>
+                        </form>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+            <!-- gerenciamento de ativos -->
+            {% if modo == 'crtatv' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <input type="hidden" name="id_atv" value="{{id_atv}}">
+                  <h4 class="text-center form-label"> <strong>Ativo N: {{id_atv}}</strong></h4>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Classe do ativo</label>
+                  <select class="form-select form-select" name="cls">
+                    {% for cls in classes %}
+                      <option value="{{cls.id}}">{{cls.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Marca do ativo</label>
+                  <select class="form-select form-select" name="brd">
+                    {% for brand in brands %}
+                      <option value="{{brand.id}}">{{brand.brand_name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Identificação do ativo</label>
+                  <input type="text" maxlength="100" class="form-control" name="atv-id" required="">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Modelo do ativo</label>
+                  <input type="text" maxlength="100" class="form-control" name="model-atv" required="">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Especificação do ativo</label>
+                  <textarea class="form-control" rows="20" maxlength="2048" name="espec"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'lstatv' %}
+            <div class="list-group m-3">
+                <table class="table">
+                  <tr>
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Classe
+                    </th>
+                    <th>
+                      Marca
+                    </th>
+                    <th>
+                      Modelo
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                  </tr>
+                  <form method="POST">
+                    {% csrf_token %}
+                  <tr>
+                    <td>
+                      <input class="form-control" type="text" name="item-id" placeholder="Todos">
+                    </td>
+                    <td>
+                      <select class="form-select" name="classes">
+                      <option value="" selected>Todas</option>
+                      {% for classe in classes %}
+                        <option value="{{classe.id}}">{{classe.name}}</option>
+                      {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" name="marca">
+                      <option value="" selected>Todas</option>
+                      {% for brand in brands %}
+                        <option value="{{brand.id}}">{{brand.brand_name}}</option>
+                      {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" name="item-model" placeholder="Todos">
+                    </td>
+                    <td>
+                      <select class="form-select" name="status">
+                        <option value="" selected>Todos</option>
+                        <option value="a">Em uso</option>
+                        <option value="b">Disponiveis</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" colspan="5">
+                      <button type="submit" class="btn btn-primary" style="width:100%">Filtrar!</button>
+                    </td>
+                  </tr>
+                  </form>
+                {% for ativo in ativos %}
+                <tr>
+                  <td>
+                  <a href="/ativos/gestao/{{ativo.id}}">
+                    {{ativo.id}}
+                  </a>
+                  </td>
+                  <td>
+                    {{ativo.item_class.name}}
+                  </td>
+                  <td>
+                    {{ativo.brand.brand_name}}
+                  </td>
+                  <td>
+                    {{ativo.item_model}}
+                  </td>
+                  <td>
+                    {% if ativo.status %}
+                    Disponivel
+                    {% else %}
+                    Em uso
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+            {% endif %}
+            {% if modo == 'atzatv' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <input type="hidden" name="id_atv" value="{{ativo.id}}">
+                  <h4 class="text-center form-label"> <strong>Ativo N: {{ativo.id}} - Status: {% if ativo.status %} Disponivel {% else %} Em uso {% endif %}</strong></h4>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Classe do ativo</label>
+                  <select class="form-select form-select" name="cls">
+                    {% for cls in classes %}
+                      <option value="{{cls.id}}" {% if cls == ativo.item_class %} selected="" {% endif %}>{{cls.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Marca do ativo</label>
+                  <select class="form-select form-select" name="brd">
+                    {% for brand in brands %}
+                      <option value="{{brand.id}}" {% if brand == ativo.brand %} selected="" {% endif %}>{{brand.brand_name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Identificação do ativo</label>
+                  <input type="text" maxlength="100" class="form-control" name="atv-id" required="" value="{{ativo.item_id}}">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Modelo do ativo</label>
+                  <input type="text" maxlength="100" class="form-control" name="model-atv" required="" value="{{ativo.item_model}}">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Especificação do ativo</label>
+                  <textarea class="form-control" rows="12" maxlength="2048" name="espec">{{ativo.especifications}}</textarea>
+                  <div class="form-text"> <a href="/ativos/gestao/delete/{{ativo.id}}/">Clique aqui</a> para <strong> deletar </strong> este ativo!</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Atualizar!</button>
+              </form>
+              <h6 class="text-center form-label"> <strong>Ultimos pacotes envolvidos</strong></h6>
+              <table class="table">
+                <tr>
+                  <th>
+                    ID
+                  </th>
+                  <th>
+                    Tipo
+                  </th>
+                  <th>
+                    Departamento de destino
+                  </th>
+                  <th>
+                    Responsável
+                  </th>
+                </tr>
+              {% for pkg in pkgs %}
+              <tr>
+                <td>
+                <a href="/ativos/pacote/{{pkg.id}}">
+                  {{pkg.id}}
+                </a>
+                </td>
+                <td>
+                  {% if pkg.type %} Entrada {% else %} Saída {% endif %}
+                </td>
+                <td>
+                  {{pkg.department.name}}
+                </td>
+                <td>
+                  {{pkg.owner.username}}
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+            </div>
+            {% endif %}
+            {% if modo == 'delatv' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar o ativo N: {{ativo.id}}? <br>
+                      Classe: {{ativo.item_class.name}} <br>
+                      Marca: {{ativo.brand.brand_name}} <br>
+                      Modelo: {{ativo.item_model}} <br>
+                      Identificação: {{ativo.item_id}}
+                    </p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'gestao' %}
+            <div class="m-4">
+              <div>
+                <table>
+                  <tr>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="crt">
+                        <button type="submit" class="btn btn-primary m-3">Criar Ativo</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="lst">
+                        <button type="submit" class="btn btn-primary m-3">Listar Ativo</button>
+                        </form>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+            {% if modo == 'pacotes' %}
+            <div class="m-4">
+              <div>
+                <table>
+                  <tr>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="crt">
+                        <button type="submit" class="btn btn-primary m-3">Criar Pacote</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="lst">
+                        <button type="submit" class="btn btn-primary m-3">Listar Pacotes</button>
+                        </form>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+            {% if modo == 'crtpkg' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <input type="hidden" name="idpkg" value="{{id}}">
+                  <h4 class="text-center form-label"> <strong>Pacote N: {{id}}</strong></h4>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Tipo de movimentação</label>
+                  <select class="form-select form-select" name="pkgtype">
+                    <option value="s">Saída</option>
+                    <option value="e">Entrada</option>
+                  </select>
+                  <div class="form-text">Não poderá ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Departamento de destino</label>
+                  <select class="form-select form-select" name="dpto">
+                    {% for departamento in departamentos %}
+                      <option value="{{departamento.id}}">{{departamento.name}}</option>
+                    {% endfor %}
+                  </select>
+                  <div class="form-text">Não poderá ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Colaborador responsável</label>
+                  <input type="text" class="form-control" name="colab" required="">
+                  <div class="form-text">Não poderá ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Razão</label>
+                  <textarea class="form-control" rows="10" maxlength="2048" name="reazon"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'lstpkg' %}
+            <div class="list-group m-3">
+                <table class="table">
+                  <tr>
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Movimentação
+                    </th>
+                    <th>
+                      Status
+                    </th>
+                    <th>
+                      Departamento de destino
+                    </th>
+                    <th>
+                      Responsável
+                    </th>
+                  </tr>
+                  <form method="POST">
+                    {% csrf_token %}
+                  <tr>
+                    <td>
+                      <input class="form-control" type="text" name="pkg-id" placeholder="Todos">
+                    </td>
+                    <td>
+                      <select class="form-select" name="movimentacao">
+                        <option value="" selected>Todas</option>
+                        <option value="s">Saída</option>
+                        <option value="e">Entrada</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" name="status">
+                        <option value="" selected>Todos</option>
+                        <option value="a">Aberto</option>
+                        <option value="f">Fechado</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" name="dpto-id">
+                      <option value="" selected>Todos</option>
+                      {% for departamento in departamentos %}
+                        <option value="{{departamento.id}}">{{departamento.name}}</option>
+                      {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" name="item-owner" placeholder="Todos">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" colspan="5">
+                      <button type="submit" class="btn btn-primary" style="width:100%">Filtrar!</button>
+                    </td>
+                  </tr>
+                  </form>
+                {% for pkg in pkgs %}
+                <tr>
+                  <td>
+                  <a href="/ativos/pacote/{{pkg.id}}/">
+                    {{pkg.id}}
+                  </a>
+                  </td>
+                  <td>
+                    {% if pkg.type %} Entrada {% else %} Saida {% endif %}
+                  </td>
+                  <td>
+                    {% if pkg.open %} Aberto {% else %} Fechado {% endif %}
+                  </td>
+                  <td>
+                    {{ pkg.department.name }}
+                  </td>
+                  <td>
+                    {{ pkg.owner.username }}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+            {% endif %}
+            {% if modo == 'atzpkg' %}
+            {% if pkg.open %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <input type="hidden" name="idpkg" value="{{ id }}">
+                  <h4 class="text-center form-label"> <strong>Pacote N: {{ pkg.id }} - Aberto</strong></h4>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Tipo de movimentação: {% if pkg.type %} Entrada {% else %} Saída {% endif %}</label>
+                  <div class="form-text">Não pode ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Departamento de destino: {{pkg.department.name}}</label>
+                  <div class="form-text">Não pode ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Colaborador responsável: {{pkg.owner.username}}</label>
+                  <div class="form-text">Não pode ser alterado</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Razão</label>
+                  <textarea class="form-control" rows="10" maxlength="2048" name="reazon">{{pkg.reason}}</textarea>
+                </div>
+                <div class="mb-3">
+                  <h5 class="text-center form-label"> <strong>Ativos do pacote</strong></h5>
+                </div>
+              <table class="table">
+                <tr>
+                  <th>
+                    ID
+                  </th>
+                  <th>
+                    Classe
+                  </th>
+                  <th>
+                    Marca
+                  </th>
+                  <th>
+                    Modelo
+                  </th>
+                </tr>
+              {% for ativo in ativos %}
+              <tr>
+                <td>
+                <a href="/ativos/gestao/{{ativo.ativo.id}}">
+                  {{ativo.ativo.id}}
+                </a>
+                </td>
+                <td>
+                  {{ativo.ativo.item_class.name}}
+                </td>
+                <td>
+                  {{ativo.ativo.brand.brand_name}}
+                </td>
+                <td>
+                  {{ativo.ativo.item_model}}
+                </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td colspan="4" class="text-center">
+                  <a href="/ativos/pacote/gerenciamento/{{ pkg.id }}/">Gerenciar ativos do pacote</a>
+                </td>
+              </tr>
+            </table>
+            <div class="mb-3">
+              <div class="form-text"><a href="/ativos/pacote/delete/{{pkg.id}}/">Clique aqui</a> para deletar o pacote.</div>
+              <div class="form-text"><a href="/ativos/pacote/fechamento/{{pkg.id}}/">Clique aqui</a> para fechar o pacote.</div>
+            </div>
+              <button type="submit" class="btn btn-primary" style="width:100%">Atualizar!</button>
+            </form>
+            </div>
+            {% else %}
+            <div class="m-4">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <input type="hidden" name="idpkg" value="{{ id }}">
+                    <h4 class="text-center form-label"> <strong>Pacote N: {{ pkg.id }} - FECHADO </strong></h4>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Tipo de movimentação: {% if pkg.type %} Entrada {% else %} Saída {% endif %}</label>
+                    <div class="form-text">Não pode ser alterado</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Departamento de destino: {{pkg.department.name}}</label>
+                    <div class="form-text">Não pode ser alterado</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Colaborador responsável: {{pkg.owner.username}}</label>
+                    <div class="form-text">Não pode ser alterado</div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Razão</label>
+                    <label class="form-label">{{pkg.reason}}</label>
+                    <div class="form-text">Não pode ser alterado</div>
+                  </div>
+                  <div class="mb-3">
+                    <h5 class="text-center form-label"><strong>Ativos do pacote</strong></h5>
+                  </div>
+                <table class="table">
+                  <tr>
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Classe
+                    </th>
+                    <th>
+                      Marca
+                    </th>
+                    <th>
+                      Modelo
+                    </th>
+                  </tr>
+                {% for ativo in ativos %}
+                <tr>
+                  <td>
+                  <a href="/ativos/gestao/{{ativo.ativo.id}}">
+                    {{ativo.ativo.id}}
+                  </a>
+                  </td>
+                  <td>
+                    {{ativo.ativo.item_class.name}}
+                  </td>
+                  <td>
+                    {{ativo.ativo.brand.brand_name}}
+                  </td>
+                  <td>
+                    {{ativo.ativo.item_model}}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+              </div>
+            {% endif %}
+            {% endif %}
+            {% if modo == 'mngpkg' %}
+            <div class="list-group m-3">
+              <h5 class="text-center form-label"> <strong>Ativos do pacote {{pkg.id}}</strong></h5>
+                <table class="table">
+                  <tr>
+                    <th>
+                      Incluso
+                    </th>
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Classe
+                    </th>
+                    <th>
+                      Marca
+                    </th>
+                    <th>
+                      Modelo
+                    </th>
+                  </tr>
+                  <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="modo" value="filter">
+                  <tr>
+                    <td>
+                      <select class="form-select" name="incluso">
+                        <option value="s">Sim</option>
+                        <option value="n" selected>Não</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" name="item-id" placeholder="Todos">
+                    </td>
+                    <td>
+                      <select class="form-select" name="classes">
+                      <option value="" selected>Todas</option>
+                      {% for classe in classes %}
+                        <option value="{{classe.id}}">{{classe.name}}</option>
+                      {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <select class="form-select" name="marca">
+                      <option value="" selected>Todas</option>
+                      {% for brand in brands %}
+                        <option value="{{brand.id}}">{{brand.brand_name}}</option>
+                      {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control" type="text" name="item-model" placeholder="Todos">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center" colspan="5">
+                      <button type="submit" class="btn btn-primary" style="width:100%">Filtrar!</button>
+                    </td>
+                  </tr>
+                  </form>
+                {% for ativo in ativos %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="modo" value="atz">
+                  <tr>
+                    <td>
+                      <div class="form-check">
+                        <input class="form-check-input" name="pkg-item" type="checkbox" value="{{ativo.id}}" {% if ativo in em_pkg %} checked {% endif %}>
+                      </div>
+                    </td>
+                    <td>
+                    <a href="/ativos/gestao/{{ativo.id}}">
+                      {{ativo.id}}
+                    </a>
+                    </td>
+                    <td>
+                      {{ativo.item_class.name}}
+                    </td>
+                    <td>
+                      {{ativo.brand.brand_name}}
+                    </td>
+                    <td>
+                      {{ativo.item_model}}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="5">
+                      <button type="submit" class="btn btn-primary" style="width:100%">Atualizar!</button>
+                    </td>
+                  </tr>
+                </form>
+              </table>
+            </div>
+            {% endif %}
+            {% if modo == 'delpkg' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar o pacote N: {{pkg.id}}?</p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'clspkg' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja fechar o pacote N: {{pkg.id}}?</p>
+                    <button type="submit" class="btn btn-primary">Fechar!</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

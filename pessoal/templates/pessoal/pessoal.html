@@ -1,0 +1,222 @@
+{% extends 'base.html' %} 
+
+{% block title %} 
+pessoal
+{% endblock %} 
+
+{% block body %}
+
+{% if alert %}
+<script>
+    alert("{{alert}}")
+</script>
+{% endif %}
+
+<div class="m-3">
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group">
+                <a class="list-group-item list-group-item-action active" aria-current="true">Pessoal</a>
+                <a href="/pessoal/departamentos/" class="list-group-item list-group-item-action">Departamentos</a>
+                <a href="/pessoal/colaboradores/" class="list-group-item list-group-item-action">Colaboradores</a>
+                <a href="/pessoal/relacionamentos/" class="list-group-item list-group-item-action">Relacionamentos</a>
+            </div>
+        </div>
+        <div class="col-8 border rounded-5 border">
+            {% if modo == 'info' %}
+            <p class="text-center mt-5">{{content}}</p>
+            {% endif %}
+            {% if modo == 'deplst' %}
+            <div class="list-group m-3">
+              <a href="/pessoal/departamentos/criacao/" class="list-group-item list-group-item-action active">Criar um novo departamento.</a>
+                {% for dep in departamentos %}
+                    <a href="/pessoal/departamento/{{dep.id}}/" class="list-group-item list-group-item-action">{{dep.name}}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if modo == 'depcrt' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome do departamento</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-do-departamento" required="">
+                </div>
+                <button type="submit" class="btn btn-primary">Criar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'depunico' %}
+            <div class="m-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label class="form-label">Nome do departamento</label>
+                  <input type="text" maxlength="50" class="form-control" name="nome-do-departamento" value="{{departamento.name}}" required="">
+                  <div class="form-text"> <a href="/pessoal/departamento/delete/{{departamento.id}}/">Clique aqui</a> para <strong> deletar </strong> este departamento!</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Atualizar!</button>
+              </form>
+            </div>
+            {% endif %}
+            {% if modo == 'deldep' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar o departamento: {{departamento.name}}?</p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'colab' %}
+            <div class="list-group m-3">
+                <a href="/pessoal/colaborador/criacao/" class="list-group-item list-group-item-action active">Criar um novo colaborador.</a>
+                {% for colaborador in colaboradores %}
+                    <a href="/pessoal/colaborador/atualizacao/{{colaborador.id}}/" class="list-group-item list-group-item-action">{{colaborador.username}}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if modo == 'crtcolab' %}
+            <div class="list-group m-3">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label class="form-label">Nome de usuário:</label>
+                      <input type="text" class="form-control" name="username" required="">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">E-mail:</label>
+                      <input type="email" class="form-control" name="email" required="">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" class="form-control" name="password" required="">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Criar!</button>
+                  </form>
+            </div>
+            {% endif %}
+            {% if modo == 'atzcolab' %}
+            <div class="list-group m-3">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label class="form-label">Nome de usuário:</label>
+                      <input type="text" class="form-control" name="username" required="" value="{{colab.username}}">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">E-mail:</label>
+                      <input type="email" class="form-control" name="email" required="" value="{{colab.email}}">
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="administrador" value="1" {% if colab.is_active %} checked {% endif %}>
+                      <label class="form-check-label" for="flexCheckDefault">
+                        Usuário administrador da plataforma?
+                      </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" class="form-control" name="password">
+                        <div class="form-text mb-2"> <a href="/pessoal/colaborador/delete/{{colab.id}}/">Clique aqui</a> para <strong> deletar </strong> este colaborador!</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Atualizar!</button>
+                  </form>
+            </div>
+            {% endif %}
+            {% if modo == 'delcolab' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <p>Tem certeza que deseja deletar o colaborador: {{colaborador.username}}?</p>
+                    <button type="submit" class="btn btn-primary">Delete!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'relcols' %}
+            <div class="m-4">
+              <div>
+                <table>
+                  <tr>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="crtrel" value="1">
+                        <button type="submit" class="btn btn-primary m-3">Criar Relacionamento</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="lstrel" value="1">
+                        <button type="submit" class="btn btn-primary m-3">Listar Relacionamentos</button>
+                        </form>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+            {% if modo == 'crtrelcols' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="crtusrrel" value="1">
+                    <div class="mb-3">
+                      <label class="form-label">Nome do departamento</label>
+                      <select class="form-select form-select" name="departamento">
+                        {% for dpto in dptos %}
+                          <option value="{{dpto.id}}">{{dpto.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Nome do usuário</label>
+                      <input type="text" class="form-control" name="username">
+                    </div>
+                    <button type="submit" class="mt-3 btn btn-primary">Criar Relacionamento!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'flstrelcols' %}
+            <div class="m-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <label class="form-label">Selecione o departamento</label>
+                      <select class="form-select form-select" name="departamento">
+                        {% for dpto in dptos %}
+                          <option value="{{dpto.id}}">{{dpto.name}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <button type="submit" class="mt-3 btn btn-primary">Listar Relacionamentos!</button>
+                </form>
+            </div>
+            {% endif %}
+            {% if modo == 'lstrelcols' %}
+            <div class="m-4">
+              <ul class="list-group">
+                {% for i in listagem %}
+                  <li class="list-group-item">{{i.user.username}} -> 
+                    <a href="/pessoal/relacionamentos/delecao/{{i.id}}">delete</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+            {% if modo == 'delrelcols' %}
+            <div class="m-4">
+              <form method="POST">
+                {% csrf_token %}
+                <p>
+                  Tem certeza que deseja deletar o relacionamento do colaborador: <strong>{{rel.user.username}}</strong> do departamento: <strong>{{rel.dpto.name}}</strong>
+                </p>
+                <button type="submit" class="btn btn-primary m-3">Deletar</button>
+              </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
