@@ -277,8 +277,13 @@ def lstatv(request):
     clss = Classe.objects.all()
     
     if request.method == 'POST':
+
+        if request.POST['ativo-id']:
+            ativos = [a for a in ativos if a.id == request.POST['ativo-id']]
+
         if request.POST['item-id']:
-            ativos = [a for a in ativos if a.id == request.POST['item-id']]
+            ativos = [a for a in ativos if a.item_id == request.POST['item-id']]
+
         if request.POST['classes']:
             try:
                 classe = Classe.objects.get(id=request.POST['classes'])
@@ -483,7 +488,6 @@ def atzpkg(request, id):
                     'content':'Este pacote não existe!'
                 })
             
-            pkg.type = True if request.POST['pkgtype'] == 'e' else False
             pkg.reason = request.POST['reazon']
             pkg.save()
 
@@ -634,7 +638,6 @@ def clspkg(request,id):
             'modo':'info',
             'content':'Esse pacote não existe!'
         })
-
 
     if request.method == 'POST':
         pkg.open = False

@@ -212,7 +212,10 @@ ativos
                 <table class="table">
                   <tr>
                     <th>
-                      ID
+                      ID Ativo
+                    </th>
+                    <th>
+                      ID Item
                     </th>
                     <th>
                       Classe
@@ -230,6 +233,9 @@ ativos
                   <form method="POST">
                     {% csrf_token %}
                   <tr>
+                    <td>
+                      <input class="form-control" type="text" name="ativo-id" placeholder="Todos">
+                    </td>
                     <td>
                       <input class="form-control" type="text" name="item-id" placeholder="Todos">
                     </td>
@@ -261,7 +267,7 @@ ativos
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-center" colspan="5">
+                    <td class="text-center" colspan="6">
                       <button type="submit" class="btn btn-primary" style="width:100%">Filtrar!</button>
                     </td>
                   </tr>
@@ -269,9 +275,12 @@ ativos
                 {% for ativo in ativos %}
                 <tr>
                   <td>
-                  <a href="/ativos/gestao/{{ativo.id}}">
-                    {{ativo.id}}
-                  </a>
+                    <a href="/ativos/gestao/{{ativo.id}}">
+                      {{ativo.id}}
+                    </a>
+                  </td>
+                  <td>
+                      {{ativo.item_id}}
                   </td>
                   <td>
                     {{ativo.item_class.name}}
